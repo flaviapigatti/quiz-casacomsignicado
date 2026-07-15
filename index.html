@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz Casa com Significado · Flávia Pigatti</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --plum-deep:  #3A1248;
+  --plum-mid:   #5C2475;
+  --plum-light: #7B3FA0;
+  --orchid:     #9B3FC8;
+  --lilac:      #C084E8;
+  --white:      #FFFFFF;
+  --offwhite:   #FAF7FC;
+  --text-body:  #3A1248;
+  --text-muted: #7A6685;
+  --border:     rgba(92,36,117,0.15);
+  --gold:       #C9A96E;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--offwhite);
+  color: var(--text-body);
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════
+   LANDING — tela inicial
+═══════════════════════════════ */
+#page-landing {
+  min-height: 100vh;
+  background: linear-gradient(160deg, var(--plum-deep) 0%, var(--plum-mid) 60%, var(--plum-light) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 60px 28px 80px;
+  position: relative;
+  overflow: hidden;
+}
+#page-landing::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(155,63,200,0.35) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.brand-line {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  color: var(--lilac);
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+  position: relative;
+}
+.brand-line::before, .brand-line::after {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 0.5px;
+  background: var(--lilac);
+  opacity: 0.5;
+}
+
+.landing-h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 9vw, 62px);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+  position: relative;
+}
+.landing-h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--lilac);
+}
+
+.landing-desc {
+  font-size: 16px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.75;
+  max-width: 420px;
+  margin: 18px auto 0;
+  position: relative;
+}
+
+.landing-quote {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 16px;
+  color: var(--gold);
+  margin-top: 32px;
+  position: relative;
+}
+
+.landing-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 36px auto 0;
+  max-width: 440px;
+  position: relative;
+}
+.pill {
+  padding: 6px 16px;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.03em;
+}
+
+.btn-start {
+  margin-top: 44px;
+  padding: 18px 44px;
+  background: var(--white);
+  color: var(--plum-mid);
+  border: none;
+  border-radius: 100px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  position: relative;
+}
+.btn-start:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.22);
+}
+
+.landing-note {
+  margin-top: 20px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.04em;
+  position: relative;
+}
+
+/* ═══════════════════════════════
+   QUIZ PAGE
+═══════════════════════════════ */
+#page-quiz { display: none; }
+
+.quiz-header {
+  background: var(--plum-deep);
+  padding: 14px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.quiz-header-inner {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.progress-bar {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--lilac);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.progress-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.quiz-body {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* question */
+.question-card {
+  padding-top: 40px;
+  animation: fadeUp 0.3s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.q-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--orchid);
+  margin-bottom: 10px;
+}
+.q-text {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(20px, 4.5vw, 26px);
+  font-weight: 700;
+  color: var(--plum-deep);
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.q-hint {
+  font-size: 14px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+  line-height: 1.6;
+}
+
+/* options */
+.opts-list { display: flex; flex-direction: column; gap: 10px; }
+.opt-card {
+  padding: 16px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--text-body);
+  background: var(--white);
+  transition: all 0.18s;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+  text-align: left;
+}
+.opt-card:hover { border-color: var(--lilac); }
+.opt-card.selected {
+  background: #F0E8F9;
+  border-color: var(--orchid);
+  color: var(--plum-deep);
+  font-weight: 500;
+}
+.opt-dot {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0; margin-top: 1px;
+  transition: all 0.18s;
+  display: flex; align-items: center; justify-content: center;
+}
+.opt-card.selected .opt-dot { border-color: var(--orchid); background: var(--orchid); }
+.opt-card.selected .opt-dot::after {
+  content: ''; width: 7px; height: 7px;
+  border-radius: 50%; background: white;
+}
+
+/* input / textarea */
+.field-input, .field-area {
+  width: 100%;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--text-body);
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 16px 18px;
+  transition: border-color 0.2s;
+  line-height: 1.65;
+}
+.field-area { min-height: 120px; resize: vertical; }
+.field-input:focus, .field-area:focus { outline: none; border-color: var(--orchid); }
+.field-input::placeholder, .field-area::placeholder { color: #C4B0D4; }
+
+/* scale */
+.scale-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.scale-row { display: flex; gap: 8px; }
+.scale-btn {
+  flex: 1; padding: 15px 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px; font-weight: 500;
+  color: var(--text-muted);
+  cursor: pointer; transition: all 0.18s;
+}
+.scale-btn:hover { border-color: var(--lilac); color: var(--plum-mid); }
+.scale-btn.selected { background: var(--plum-mid); border-color: var(--plum-mid); color: var(--white); }
+
+/* nav */
+.q-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  gap: 12px;
+}
+.btn-back {
+  padding: 13px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-back:hover { border-color: var(--orchid); color: var(--plum-mid); }
+.btn-next {
+  flex: 1;
+  padding: 15px 20px;
+  background: linear-gradient(135deg, var(--plum-mid), var(--orchid));
+  color: var(--white);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+  letter-spacing: 0.01em;
+}
+.btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ═══════════════════════════════
+   RESULT PAGE
+═══════════════════════════════ */
+#page-result { display: none; }
+
+.result-hero {
+  background: linear-gradient(160deg, var(--plum-deep) 0%, var(--plum-mid) 60%, var(--plum-light) 100%);
+  padding: 56px 28px 64px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.result-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(155,63,200,0.3) 0%, transparent 65%);
+  pointer-events: none;
+}
+.result-icon { font-size: 48px; margin-bottom: 16px; position: relative; }
+.result-for {
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  position: relative;
+}
+.result-hero h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(24px, 5vw, 34px);
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 16px;
+  line-height: 1.2;
+  position: relative;
+}
+.result-hero p {
+  font-size: 15px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.75;
+  max-width: 480px;
+  margin: 0 auto;
+  position: relative;
+}
+.result-gold {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 15px;
+  color: var(--gold);
+  margin-top: 20px;
+  position: relative;
+}
+.result-cta {
+  font-size: 14px;
+  font-weight: 300;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.75;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.12);
+  position: relative;
+}
+
+.result-body {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+.result-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.result-card-header {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--orchid);
+}
+.result-row {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.result-row:last-child { border-bottom: none; }
+.result-row-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+.result-row-val {
+  font-size: 14px;
+  color: var(--text-body);
+  line-height: 1.6;
+}
+
+.btn-whatsapp {
+  width: 100%;
+  padding: 17px;
+  background: #25D366;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  transition: background 0.2s, transform 0.15s;
+  margin-bottom: 10px;
+}
+.btn-whatsapp:hover { background: #1da851; transform: translateY(-1px); }
+.btn-restart {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-restart:hover { border-color: var(--orchid); color: var(--plum-mid); }
+
+.site-footer {
+  text-align: center;
+  padding: 32px 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border);
+}
+.site-footer strong { color: var(--plum-mid); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ LANDING ═══════════════════ -->
+<div id="page-landing">
+  <div class="brand-line">Flávia Pigatti · Personal Organizer</div>
+
+  <h1 class="landing-h1">
+    Como está a sua<br><em>conexão com o lar?</em>
+  </h1>
+
+  <p class="landing-desc">
+    Um quiz reflexivo para descobrir o que a sua casa está tentando te dizer — e como criar um lar que te acolha de verdade.
+  </p>
+
+  <span class="landing-quote">"Não é sobre organizar a casa. É sobre se reencontrar nela."</span>
+
+  <div class="landing-pills">
+    <span class="pill">🌿 Reconexão</span>
+    <span class="pill">🏡 Pertencimento</span>
+    <span class="pill">✨ Significado</span>
+    <span class="pill">💜 Acolhimento</span>
+    <span class="pill">🌸 Ciclos de vida</span>
+  </div>
+
+  <button class="btn-start" onclick="startQuiz()">Começar meu quiz →</button>
+
+  <p class="landing-note">10 perguntas · Responda com o coração</p>
+</div>
+
+
+<!-- ═══════════════════ QUIZ ═══════════════════ -->
+<div id="page-quiz">
+  <div class="quiz-header">
+    <div class="quiz-header-inner">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">1 / 10</div>
+    </div>
+  </div>
+  <div class="quiz-body">
+    <div id="questionMount"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════ RESULTADO ═══════════════════ -->
+<div id="page-result">
+  <div class="result-hero" id="resultHero"></div>
+  <div class="result-body">
+    <div class="result-card" id="resultAnswers"></div>
+    <button class="btn-whatsapp" onclick="sendWhatsApp()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Quero uma análise gratuita com a Flávia
+    </button>
+    <button class="btn-restart" onclick="restart()">Refazer o quiz</button>
+  </div>
+  <footer class="site-footer">
+    <strong>Flávia Pigatti</strong> · Personal Organizer &amp; Especialista em Neuroarquitetura<br>
+    <span style="display:block;margin-top:5px;">Casa com Significado · Metodologia de Reconexão com o Lar</span>
+  </footer>
+</div>
+
+
+<script>
+// ── CONFIG ──
+var WHATSAPP = '5500000000000'; // ← SUBSTITUA PELO SEU NÚMERO (DDI+DDD+número)
+
+// ── PERGUNTAS ──
+var questions = [
+  {
+    id: 'nome',
+    type: 'input',
+    label: 'Antes de começar',
+    text: 'Qual é o seu nome?',
+    hint: 'Para que eu possa conversar com você de forma mais pessoal.',
+    placeholder: 'Escreva seu nome aqui...'
+  },
+  {
+    id: 'ciclo',
+    type: 'options',
+    label: 'Sobre você',
+    text: 'Qual ciclo de vida você está vivendo agora?',
+    hint: 'Escolha o que mais se aproxima do seu momento.',
+    options: [
+      'Maternidade — filhos pequenos me rodeiam',
+      'Ninho vazio — os filhos cresceram e saíram',
+      'Recomeço — separação, luto ou grande mudança',
+      'Nova fase profissional ou de carreira',
+      'Casamento ou vida a dois',
+      'Aposentadoria — um novo ritmo de vida',
+      'Mudança de cidade ou casa nova',
+      'Outro momento de transição'
+    ]
+  },
+  {
+    id: 'sensacao',
+    type: 'options',
+    label: 'Seu lar fala',
+    text: 'Quando você entra na sua casa, qual é a sua primeira sensação?',
+    hint: 'Não pense — sinta e escolha.',
+    options: [
+      '😮‍💨 Alívio — finalmente posso respirar',
+      '😰 Peso — tem muita coisa para resolver',
+      '😐 Indiferença — é só um espaço',
+      '😟 Culpa — a casa nunca está como deveria',
+      '🤍 Aconchego — me sinto acolhida',
+      '😔 Tristeza — ela não me representa mais'
+    ]
+  },
+  {
+    id: 'comodo',
+    type: 'options',
+    label: 'Pontos de desconexão',
+    text: 'Existe algum espaço da sua casa que você evita ou que te gera tensão?',
+    hint: 'Às vezes um cômodo carrega muito mais do que bagunça.',
+    options: [
+      'Sim, evito entrar em um quarto específico',
+      'Sim, a sala me estressa quando está desorganizada',
+      'Sim, a cozinha se tornou um peso',
+      'Sim, certos armários me travam só de olhar',
+      'Evito a casa toda quando posso',
+      'Não — me sinto bem em todos os espaços'
+    ]
+  },
+  {
+    id: 'fase',
+    type: 'options',
+    label: 'Casa e história',
+    text: 'Sua casa reflete quem você é hoje ou quem você foi?',
+    hint: 'Muitas mulheres vivem em casas que pertencem a uma versão anterior de si mesmas.',
+    options: [
+      '🔮 Ela reflete totalmente quem sou hoje',
+      '🧩 Em partes — algumas coisas já não combinam comigo',
+      '⏳ Ela pertence a uma fase que já passou',
+      '💭 Nunca tinha pensado nisso antes',
+      '🌱 Estou em transição — ainda me descobrindo'
+    ]
+  },
+  {
+    id: 'apoio',
+    type: 'scale',
+    label: 'Nível de conexão',
+    text: 'O quanto a sua casa te apoia no dia a dia?',
+    hint: 'De 1 (me sobrecarrega) a 5 (me restaura completamente).',
+    scaleMin: 'Me sobrecarrega',
+    scaleMax: 'Me restaura'
+  },
+  {
+    id: 'objeto',
+    type: 'options',
+    label: 'Memória e significado',
+    text: 'Existe algum objeto na sua casa que carrega uma história especial?',
+    hint: 'Objetos com alma transformam casas em lares.',
+    options: [
+      '💛 Sim, tenho vários e estão expostos com amor',
+      '📦 Sim, mas estão guardados e escondidos',
+      '🤔 Tenho alguns, mas nunca pensei nisso assim',
+      '🏺 Sim, e quero encontrar o lugar certo para eles',
+      '🙁 Não tenho — e me falta esse sentimento'
+    ]
+  },
+  {
+    id: 'sentidos',
+    type: 'options',
+    label: 'Os sentidos do lar',
+    text: 'O que você mais sente falta de ativar na sua casa?',
+    hint: 'O lar é vivido com o corpo inteiro — não só com os olhos.',
+    options: [
+      '🕯 Aroma — quero que minha casa tenha um cheiro que acolha',
+      '💡 Luz — preciso de iluminação que me faça bem',
+      '🌿 Natureza — plantas e vida dentro de casa',
+      '🎶 Sons — silêncio ou músicas que me nutram',
+      '🛋 Textura — materiais que me convidem a descansar',
+      '✨ Tudo — minha casa precisa de renovação sensorial'
+    ]
+  },
+  {
+    id: 'desejo',
+    type: 'textarea',
+    label: 'Seu sonho para o lar',
+    text: 'Se você pudesse mudar qualquer coisa na sua casa agora, o que seria?',
+    hint: 'Escreva livremente. Não precisa ser realista — apenas verdadeiro.',
+    placeholder: 'Descreva o espaço, o que sente quando pensa nele e como gostaria que ele fosse...'
+  },
+  {
+    id: 'mensagem',
+    type: 'textarea',
+    label: 'A voz do lar',
+    text: 'Se a sua casa pudesse te enviar uma mensagem hoje, o que ela diria?',
+    hint: 'Deixe a imaginação e o coração falarem.',
+    placeholder: 'Escreva como se a casa estivesse falando com você...'
+  }
+];
+
+// ── ESTADO ──
+var current = 0;
+var answers = {};
+
+function startQuiz() {
+  show('page-quiz');
+  renderQuestion(0);
+}
+
+function show(id) {
+  ['page-landing','page-quiz','page-result'].forEach(function(p) {
+    document.getElementById(p).style.display = 'none';
+  });
+  document.getElementById(id).style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  var pct = Math.round(((current + 1) / questions.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = (current + 1) + ' / ' + questions.length;
+}
+
+function renderQuestion(idx) {
+  current = idx;
+  updateProgress();
+  var q = questions[idx];
+  var html = '<div class="question-card">';
+  html += '<div class="q-label">' + q.label + '</div>';
+  html += '<div class="q-text">' + q.text + '</div>';
+  if (q.hint) html += '<div class="q-hint">' + q.hint + '</div>';
+
+  if (q.type === 'input') {
+    html += '<input type="text" class="field-input" id="q-field" placeholder="' + q.placeholder + '" value="' + (answers[q.id] || '') + '" />';
+  } else if (q.type === 'options') {
+    html += '<div class="opts-list">';
+    q.options.forEach(function(opt) {
+      var sel = answers[q.id] === opt ? ' selected' : '';
+      html += '<div class="opt-card' + sel + '" onclick="selectOpt(this,\'' + q.id + '\')">';
+      html += '<div class="opt-dot"></div><span>' + opt + '</span></div>';
+    });
+    html += '</div>';
+  } else if (q.type === 'scale') {
+    html += '<div class="scale-labels"><span>' + q.scaleMin + '</span><span>' + q.scaleMax + '</span></div>';
+    html += '<div class="scale-row">';
+    for (var v = 1; v <= 5; v++) {
+      var sel = answers[q.id] == v ? ' selected' : '';
+      html += '<button class="scale-btn' + sel + '" onclick="selectScale(this,\'' + q.id + '\',' + v + ')">' + v + '</button>';
+    }
+    html += '</div>';
+  } else if (q.type === 'textarea') {
+    html += '<textarea class="field-area" id="q-field" placeholder="' + q.placeholder + '">' + (answers[q.id] || '') + '</textarea>';
+  }
+
+  var isLast = idx === questions.length - 1;
+  html += '<div class="q-nav">';
+  if (idx > 0) html += '<button class="btn-back" onclick="goBack()">← Voltar</button>';
+  else html += '<span></span>';
+  html += '<button class="btn-next" onclick="goNext()">' + (isLast ? 'Ver meu resultado →' : 'Continuar →') + '</button>';
+  html += '</div></div>';
+
+  document.getElementById('questionMount').innerHTML = html;
+  var f = document.getElementById('q-field');
+  if (f) setTimeout(function(){ f.focus(); }, 50);
+}
+
+function selectOpt(el, qid) {
+  el.closest('.opts-list').querySelectorAll('.opt-card').forEach(function(c){ c.classList.remove('selected'); });
+  el.classList.add('selected');
+  answers[qid] = el.querySelector('span').textContent;
+}
+
+function selectScale(el, qid, val) {
+  el.closest('.scale-row').querySelectorAll('.scale-btn').forEach(function(b){ b.classList.remove('selected'); });
+  el.classList.add('selected');
+  answers[qid] = val;
+}
+
+function saveField() {
+  var q = questions[current];
+  var f = document.getElementById('q-field');
+  if (f) answers[q.id] = f.value.trim();
+}
+
+function goNext() {
+  saveField();
+  if (current === questions.length - 1) {
+    buildResult();
+    show('page-result');
+  } else {
+    renderQuestion(current + 1);
+  }
+}
+
+function goBack() {
+  saveField();
+  if (current > 0) renderQuestion(current - 1);
+}
+
+// ── PERFIS ──
+function getProfile() {
+  var sensacao = answers['sensacao'] || '';
+  var apoio    = parseInt(answers['apoio']) || 3;
+  var fase     = answers['fase'] || '';
+  var ciclo    = answers['ciclo'] || '';
+
+  // Perfil 1 — Sobrecarregada / desconectada
+  if (apoio <= 2 || sensacao.includes('Peso') || sensacao.includes('Culpa') || sensacao.includes('Tristeza')) {
+    return {
+      icon: '🌱',
+      title: 'Sua casa está pedindo atenção — e você também.',
+      desc: 'O peso que você sente quando olha para a sua casa não é fraqueza. É um sinal. Um convite gentil para parar, respirar e olhar com outros olhos para o espaço que te abriga todos os dias. Você cuida de tantas pessoas e de tantas coisas — mas chegou a hora de cuidar também do lugar onde você repousa, se nutre e se reconstrói. Sua casa tem potencial para se tornar um lar regenerador. E essa jornada começa com um único passo: a reconexão.',
+      gold: '"A casa não precisa ser perfeita. Ela precisa ser verdadeira."',
+      cta: 'A Flávia pode te ajudar a entender exatamente por onde começar essa reconexão — de forma gentil, sem pressão e completamente alinhada com o momento que você está vivendo.'
+    };
+  }
+
+  // Perfil 2 — Bem conectada, pronta para aprofundar
+  if (apoio >= 4 && (sensacao.includes('Aconchego') || sensacao.includes('Alívio'))) {
+    return {
+      icon: '🏡',
+      title: 'Você já tem uma casa com presença. Agora é hora de aprofundar.',
+      desc: 'Existe algo muito bonito na relação que você já construiu com o seu lar. Ele te acolhe. Você o cuida com afeto. Isso é raro — e é precioso. Mas existe sempre uma camada mais profunda a ser descoberta. Uma casa que não só acolhe, mas que conta a sua história, reflete quem você é hoje e te regenera em cada ciclo da vida. Você está pronta para esse próximo nível de conexão.',
+      gold: '"Uma casa feliz é uma casa que acolhe."',
+      cta: 'A Flávia pode te ajudar a descobrir o que ainda falta para que seu lar se torne verdadeiramente regenerador — alinhado com a mulher que você é hoje.'
+    };
+  }
+
+  // Perfil 3 — Em transição de ciclo
+  if (fase.includes('passou') || fase.includes('transição') || ciclo.includes('Recomeço') || ciclo.includes('Ninho') || ciclo.includes('Mudança')) {
+    return {
+      icon: '🌸',
+      title: 'Você mudou. Sua casa ainda não sabe.',
+      desc: 'Existe uma sensação muito específica que surge quando a mulher evolui e a casa permanece no passado. Um certo desconforto sem nome. Uma resistência que não conseguimos explicar. Você não está errada em sentir isso. Sua casa simplesmente ainda não acompanhou a versão de você que existe hoje. Cada ciclo da vida pede uma nova forma de habitar o espaço — e reconhecer isso já é o início da transformação.',
+      gold: '"Quando a mulher muda e a casa permanece igual, algo começa a pesar."',
+      cta: 'A Flávia pode te ajudar a entender qual é o seu ciclo atual e como criar um lar que reflita e apoie quem você se tornou.'
+    };
+  }
+
+  // Perfil 4 — Em descoberta / despertando
+  return {
+    icon: '✨',
+    title: 'Você está despertando para uma nova relação com o seu lar.',
+    desc: 'Talvez você nunca tenha parado para pensar assim na sua casa. E o simples fato de você estar aqui, respondendo a essas perguntas, já diz muito sobre quem você está se tornando. Existe uma mulher dentro de você que deseja um lar com mais significado, mais presença e mais identidade. E sua casa — seja ela qual for — tem tudo para se tornar um reflexo bonito de quem você é.',
+    gold: '"Quando nos conectamos com o lar, nos reconectamos conosco mesmas."',
+    cta: 'A Flávia pode te guiar nesse despertar — ajudando você a descobrir sua essência e criar um lar que te represente de verdade.'
+  };
+}
+
+function buildResult() {
+  var nome = answers['nome'] || 'você';
+  var p = getProfile();
+
+  document.getElementById('resultHero').innerHTML =
+    '<div class="result-icon">' + p.icon + '</div>' +
+    '<div class="result-for">Resultado de ' + nome + '</div>' +
+    '<h2>' + p.title + '</h2>' +
+    '<p>' + p.desc + '</p>' +
+    '<p class="result-gold">' + p.gold + '</p>' +
+    '<p class="result-cta">' + p.cta + '</p>';
+
+  document.getElementById('resultAnswers').innerHTML = '';
+}
+
+function sendWhatsApp() {
+  var nome = answers['nome'] || 'Aluna';
+  var p    = getProfile();
+  var labels = {
+    ciclo:    'Ciclo de vida',
+    sensacao: 'Sensação ao entrar em casa',
+    comodo:   'Espaço que gera tensão',
+    fase:     'Casa e minha história',
+    apoio:    'O lar me apoia',
+    objeto:   'Objetos com significado',
+    sentidos: 'O que sinto falta de ativar',
+    desejo:   'O que mudaria na casa',
+    mensagem: 'O que minha casa me diria'
+  };
+  var lines = [
+    '🏡 *Quiz Casa com Significado*',
+    '*Flávia Pigatti · Personal Organizer*', '',
+    '👤 *Nome:* ' + nome,
+    '✨ *Perfil:* ' + p.title, '',
+    '━━━━━━━━━━━━━━━'
+  ];
+  Object.keys(labels).forEach(function(k) {
+    var val = answers[k]; if (!val) return;
+    lines.push('*' + labels[k] + ':*');
+    lines.push(k === 'apoio' ? val + '/5' : val);
+    lines.push('');
+  });
+  lines.push('━━━━━━━━━━━━━━━');
+  lines.push('_Enviado pelo Quiz Casa com Significado_');
+  window.open('https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(lines.join('\n')), '_blank');
+}
+
+function restart() {
+  answers = {}; current = 0;
+  show('page-landing');
+}
+
+// init
+document.getElementById('page-quiz').style.display = 'none';
+document.getElementById('page-result').style.display = 'none';
+</script>
+</body>
+</html>
